@@ -9,10 +9,19 @@ public class AStarManager : MonoBehaviour
 {
 
     [SerializeField]
-    private Tilemap logicalMap;
+    private Tilemap logicalTilemap; // Ground map with the actual logical tiles
 
     [SerializeField]
-    private Tilemap colliderMap;
+    private Tilemap colliderTilemap;
+
+    [SerializeField]
+    private Tilemap visualTilemap; // Visual layer of logical map
+
+    [SerializeField]
+    private Tilemap interactableTilemap;
+
+    [SerializeField]
+    private Tilemap fogTilemap;
 
     public static AStarManager instance;
     private AStarGrid grid;
@@ -26,7 +35,7 @@ public class AStarManager : MonoBehaviour
     void Start()
     {
         grid = new AStarGrid();
-        grid.GenerateMap(logicalMap, colliderMap);
+        grid.GenerateMap(logicalTilemap, colliderTilemap);
     }
 
     // Update is called once per frame
@@ -35,16 +44,17 @@ public class AStarManager : MonoBehaviour
 
     }
 
-    public List<Vector3> FindPath(Vector3 start, Vector3 end)
+    public List<Vector3> FindPath(Vector3 start, Vector3 end, List<Vector3> occupied)
     {
-        return grid.FindPath(WorldToTilemap(start), WorldToTilemap(end));
+        List<Vector3Int> occupiedPosList = occupied.Select(v => WorldToTilemap(v)).ToList();
+        return grid.FindPath(WorldToTilemap(start), WorldToTilemap(end), occupiedPosList);
     }
 
     private Vector3Int WorldToTilemap(Vector3 pos)
     {
         //Vector3 tileMapOffSet = new Vector3(0.5f, 0.5f, 0);
 
-        return logicalMap.WorldToCell(pos);
+        return logicalTilemap.WorldToCell(pos);
     }
 }
 
@@ -79,6 +89,11 @@ public class AStarNode
         get { return aStarPos; }
     }
 
+    public Vector3Int TilemapPos
+    {
+        get { return tileMapPos; }
+    }
+
     public bool Walkable
     {
         get { return walkable; }
@@ -103,6 +118,7 @@ public class AStarGrid
 
     public void GenerateMap(Tilemap map, Tilemap colliderMap)
     {
+        Vector3 tileMapOffSet = new Vector3(0.5f, 0.5f, 0);
         width = map.cellBounds.max.x - map.cellBounds.min.x + 1;
         height = map.cellBounds.max.y - map.cellBounds.min.y + 1;
         xOffset = map.cellBounds.min.x;
@@ -120,7 +136,7 @@ public class AStarGrid
                 {
                     Vector2Int aStarPos = new(ax, ay);
                     Vector3Int tileMapPos = new(x, y, z);
-                    Vector3 pos = map.CellToWorld(tileMapPos);
+                    Vector3 pos = map.CellToWorld(tileMapPos) + tileMapOffSet;
                     Tile groundTile = map.GetTile<Tile>(tileMapPos);
                     Tile colliderTile = colliderMap.GetTile<Tile>(tileMapPos);
 
@@ -149,7 +165,7 @@ public class AStarGrid
         }
     }
 
-    public List<Vector3> FindPath(Vector3Int start, Vector3Int end)
+    public List<Vector3> FindPath(Vector3Int start, Vector3Int end, List<Vector3Int> occupied)
     {
         Vector2Int startPos = GridToAStarPos(new(start.x, start.y));
         Vector2Int endPos = GridToAStarPos(new(end.x, end.y));
@@ -157,8 +173,12 @@ public class AStarGrid
         AStarNode startNode = grid[startPos.x, startPos.y];
         AStarNode endNode = grid[endPos.x, endPos.y];
 
-        List<AStarNode> openSet = new List<AStarNode>();
-        openSet.Add(startNode);
+        if (occupied.Any(x => Vector3.Distance(endNode.TilemapPos, x) < 0.1f)) {
+            endNode = endNode.Neighbours.FirstOrDefault(neighbour => !occupied.Any(y => Vector3.Distance(neighbour.TilemapPos, y) < 0.1f));
+        }
+
+
+        List<AStarNode> openSet = new List<AStarNode>() { startNode };
         HashSet<AStarNode> closedSet = new HashSet<AStarNode>();
 
         while (openSet.Count > 0)

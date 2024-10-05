@@ -23,17 +23,29 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void MoveSelectable(Vector3 target)
     {
-        Selectable selected = Selectables.FirstOrDefault(x => x.IsSelected());
+        // Selectable selected = Selectables.FirstOrDefault(x => x.IsSelected());
+        // 
+        // if (selected != null)
+        // {
+        //     List<Vector3> path = AStarManager.instance.FindPath(selected.transform.position, target);
+        //     StartCoroutine(StepSelected(selected, path));
+        // }
 
-        if (selected != null)
+        List<Vector3> occupied = new();
+
+        foreach (Selectable selectable in Selectables.Where(x => x.IsSelected()))
         {
-            List<Vector3> path = AStarManager.instance.FindPath(selected.transform.position, target);
-            StartCoroutine(StepSelected(selected, path));
+            List<Vector3> path = AStarManager.instance.FindPath(selectable.transform.position, target, occupied);
+            if (path != null)
+            {
+                occupied.Add(path.Last());
+                StartCoroutine(StepSelected(selectable, path));
+            }
         }
     }
 
