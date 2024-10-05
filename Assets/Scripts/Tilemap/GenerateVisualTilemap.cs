@@ -49,10 +49,10 @@ public class GenerateVisualTilemap : MonoBehaviour
 
         bool firstX = true;
 
-        for (int x = logicalMap.cellBounds.min.x; x < logicalMap.cellBounds.max.x-1; x++)
+        for (int x = logicalMap.cellBounds.min.x; x < logicalMap.cellBounds.max.x; x++)
         {
             bool firstY = true;
-            for (int y = logicalMap.cellBounds.min.y; y < logicalMap.cellBounds.max.y-1; y++)
+            for (int y = logicalMap.cellBounds.min.y; y < logicalMap.cellBounds.max.y; y++)
             {
                 for (int z = logicalMap.cellBounds.min.z; z < logicalMap.cellBounds.max.z; z++)
                 {

@@ -33,4 +33,9 @@ public class Selectable : MonoBehaviour
     {
         isSelected = false;
     }
+
+    public bool IsSelected()
+    {
+        return isSelected;
+    }
 }

@@ -83,6 +83,11 @@ public class CursorTileSnap : MonoBehaviour
             dragStarted = false;
         }
 
+        if (Input.GetMouseButtonDown(1))
+        {
+            GameManager.instance.MoveSelectable(pos);
+        }
+
         isDragging = clickOrDragStarted && Time.time - clickStartedTime > clickMs;
 
         if (isDragging)
@@ -90,12 +95,6 @@ public class CursorTileSnap : MonoBehaviour
             if (!dragStarted)
             {
                 dragStarted = true;
-
-                // mouseDragPos.yMin = Mathf.Min(mouseDragStartPos.y, mouseWorldPos.y);
-                // mouseDragPos.yMax = Mathf.Max(mouseDragStartPos.y, mouseWorldPos.y);
-                // mouseDragPos.xMin = Mathf.Min(mouseDragStartPos.x, mouseWorldPos.x);
-                // mouseDragPos.xMax = Mathf.Max(mouseDragStartPos.x, mouseWorldPos.x);
-                // Debug.Log($"Drag started: ({mouseWorldPos.x:###.##}, {mouseWorldPos.y:###.##}), rect: ({mouseDragPos.xMin:###.##},{mouseDragPos.yMin:###.##},{mouseDragPos.xMax:###.##},{mouseDragPos.yMax:###.##})");
             }
 
             mouseDragPos.yMin = Mathf.Min(mouseDragStartPos.y, pos.y);
@@ -105,10 +104,10 @@ public class CursorTileSnap : MonoBehaviour
             mouseDragSprites.Update(mouseDragPos);
             mouseDragSprites.Show();
 
-
             GameManager.instance.Selectables.ForEach(selectable =>
             {
                 Vector3 entityPos = SnapToTilemap(selectable.transform.position);
+
                 if (
                     entityPos.x <= mouseDragPos.xMax && entityPos.x >= mouseDragPos.xMin &&
                     entityPos.y <= mouseDragPos.yMax && entityPos.y >= mouseDragPos.yMin
@@ -130,13 +129,15 @@ public class CursorTileSnap : MonoBehaviour
     private Vector3 SnapToTilemap(Vector3 pos)
     {
         Vector3 tileMapOffSet = new Vector3(0.5f, 0.5f, 0);
-        Vector3 snappedPos = logicalTilemap.LocalToWorld(
-            logicalTilemap.CellToLocal(
-                logicalTilemap.LocalToCell(
-                    logicalTilemap.WorldToLocal(pos)
-                )
-            )
-        ) + tileMapOffSet;
+        //Vector3 snappedPos = logicalTilemap.LocalToWorld(
+        //    logicalTilemap.CellToLocal(
+        //        logicalTilemap.LocalToCell(
+        //            logicalTilemap.WorldToLocal(pos)
+        //        )
+        //    )
+        //) + tileMapOffSet;
+
+        Vector3 snappedPos = logicalTilemap.CellToWorld(logicalTilemap.WorldToCell(pos)) + tileMapOffSet;
 
         return snappedPos;
     }
