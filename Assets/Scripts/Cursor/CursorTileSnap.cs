@@ -85,7 +85,10 @@ public class CursorTileSnap : MonoBehaviour
 
         if (Input.GetMouseButtonDown(1))
         {
-            GameManager.instance.MoveSelectable(pos);
+            if (pos != null)
+            {
+                GameManager.instance.MoveSelectable(pos);
+            }
         }
 
         isDragging = clickOrDragStarted && Time.time - clickStartedTime > clickMs;
@@ -129,14 +132,6 @@ public class CursorTileSnap : MonoBehaviour
     private Vector3 SnapToTilemap(Vector3 pos)
     {
         Vector3 tileMapOffSet = new Vector3(0.5f, 0.5f, 0);
-        //Vector3 snappedPos = logicalTilemap.LocalToWorld(
-        //    logicalTilemap.CellToLocal(
-        //        logicalTilemap.LocalToCell(
-        //            logicalTilemap.WorldToLocal(pos)
-        //        )
-        //    )
-        //) + tileMapOffSet;
-
         Vector3 snappedPos = logicalTilemap.CellToWorld(logicalTilemap.WorldToCell(pos)) + tileMapOffSet;
 
         return snappedPos;

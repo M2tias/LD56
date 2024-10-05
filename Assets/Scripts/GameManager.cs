@@ -28,35 +28,57 @@ public class GameManager : MonoBehaviour
 
     public void MoveSelectable(Vector3 target)
     {
-        // Selectable selected = Selectables.FirstOrDefault(x => x.IsSelected());
-        // 
-        // if (selected != null)
-        // {
-        //     List<Vector3> path = AStarManager.instance.FindPath(selected.transform.position, target);
-        //     StartCoroutine(StepSelected(selected, path));
-        // }
-
         List<Vector3> occupied = new();
 
         foreach (Selectable selectable in Selectables.Where(x => x.IsSelected()))
         {
-            List<Vector3> path = AStarManager.instance.FindPath(selectable.transform.position, target, occupied);
-            if (path != null)
+            AStarResult pathResult = AStarManager.instance.FindPath(selectable.transform.position, target, occupied);
+            if (pathResult != null || pathResult.Path != null || pathResult.Path.Count == 0)
             {
-                occupied.Add(path.Last());
-                StartCoroutine(StepSelected(selectable, path));
+                occupied.Add(pathResult.Path.Last());
+
+                Coroutine ongoing = selectable.GetCurrentCoroutine();
+                if (ongoing != null)
+                {
+                    StopCoroutine(ongoing);
+                }
+
+                selectable.SetTargetInteractable(pathResult.NodeType == AStarNodeType.Interactable);
+                selectable.SetOngoingCoroutine(StartCoroutine(StepSelected(selectable, pathResult)));
             }
         }
     }
 
-    IEnumerator StepSelected(Selectable selected, List<Vector3> path)
+    IEnumerator StepSelected(Selectable selected, AStarResult pathResult)
     {
-        if (path != null)
+        float moveTime = 0.5f;
+        float attackTime = 1f;
+
+        if (pathResult?.Path != null)
         {
-            foreach (Vector3 step in path)
+            foreach (Vector3 step in pathResult.Path)
             {
+                if (Time.time - selected.LastMoveTime < moveTime)
+                {
+                    yield return new WaitForSeconds(Time.time - selected.LastMoveTime);
+                }
+
+                selected.LastMoveTime = Time.time;
                 selected.transform.position = step;
-                yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSeconds(moveTime);
+            }
+
+            // TODO: Path is done. If we need to interact, do it here?
+            if (selected.TargetIsInteractable())
+            {
+                selected.Attack();
+                yield return new WaitForSeconds(attackTime);
+                while (ResourceManager.instance.Gather(pathResult.ActionTargetPos))
+                {
+                    yield return new WaitForSeconds(attackTime);
+                }
+
+                selected.Idle();
             }
         }
     }

@@ -1,11 +1,26 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ResourceManager : MonoBehaviour
 {
     public static ResourceManager instance;
+    [SerializeField]
+    private Sprite NutSprite;
+    [SerializeField]
+    private List<Sprite> BerrySprites;
+    [SerializeField]
+    private Sprite BranchSprite;
+
+    private Dictionary<string, int> tileAmounts = new Dictionary<string, int>();
+
+    private int amountPerTile = 5;
+
     private int branches = 0;
     private int nuts = 0;
     private int berries = 0;
+
+    private int test = 3;
 
     private void Awake()
     {
@@ -24,11 +39,40 @@ public class ResourceManager : MonoBehaviour
         
     }
 
-    public void Gather(Vector3 resourcePos)
+    public bool Gather(Vector3 resourcePos)
     {
-        // - Get interactables map
-        // - Find resource from tilemap
-        // - Delete/Update from tilemap
-        // - Increment related resource
+        Vector3Int tilePos = AStarManager.instance.WorldToTilemap(resourcePos);
+        string tileName = AStarManager.instance.GetTileName(tilePos);
+        string dictKey = $"{tileName}|({tilePos.x},{tilePos.y},{tilePos.z})";
+
+        if (!tileAmounts.ContainsKey(dictKey))
+        {
+            tileAmounts.Add(dictKey, amountPerTile);
+        }
+
+        if (tileAmounts[dictKey] > 1)
+        {
+            tileAmounts[dictKey]--;
+        }
+        else
+        {
+            tileAmounts.Remove(dictKey);
+            AStarManager.instance.DeleteInteractable(tilePos);
+        }
+
+        if (NutSprite.name == tileName)
+        {
+            nuts++;
+        }
+        else if (BerrySprites.Select(x => x.name).Contains(tileName))
+        {
+            berries++;
+        }
+        else if (BranchSprite.name == tileName)
+        {
+            branches++;
+        }
+
+        return tileAmounts.ContainsKey(dictKey);
     }
 }
