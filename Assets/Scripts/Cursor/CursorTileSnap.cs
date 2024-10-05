@@ -59,6 +59,18 @@ public class CursorTileSnap : MonoBehaviour
                 clickOrDragStarted = true;
                 clickStartedTime = Time.time;
                 mouseDragStartPos = pos;
+
+                GameManager.instance.Selectables.ForEach(selectable =>
+                {
+                    if (Vector3.Distance(SnapToTilemap(selectable.transform.position), pos) < 0.1f)
+                    {
+                        selectable.Select();
+                    }
+                    else
+                    {
+                        selectable.Deselect();
+                    }
+                });
             }
         }
 
@@ -92,6 +104,23 @@ public class CursorTileSnap : MonoBehaviour
             mouseDragPos.xMax = Mathf.Max(mouseDragStartPos.x, pos.x);
             mouseDragSprites.Update(mouseDragPos);
             mouseDragSprites.Show();
+
+
+            GameManager.instance.Selectables.ForEach(selectable =>
+            {
+                Vector3 entityPos = SnapToTilemap(selectable.transform.position);
+                if (
+                    entityPos.x <= mouseDragPos.xMax && entityPos.x >= mouseDragPos.xMin &&
+                    entityPos.y <= mouseDragPos.yMax && entityPos.y >= mouseDragPos.yMin
+                )
+                {
+                    selectable.Select();
+                }
+                else
+                {
+                    selectable.Deselect();
+                }
+            });
 
             cursorGraphic.SetActive(false);
         }
