@@ -103,7 +103,10 @@ public class GenerateVisualTilemap : MonoBehaviour
             firstX = false;
         }
 
-        logicalMap.gameObject.SetActive(false);
+        if (logicalMap?.gameObject?.TryGetComponent(out TilemapRenderer tmRenderer) ?? false)
+        {
+            tmRenderer.enabled = false;
+        }
     }
 
     // Update is called once per frame
