@@ -37,14 +37,16 @@ public class MouseUI : MonoBehaviour
 
     public void UpdateResource(int amount)
     {
-        UISpriteItem item = resourceUISprites.FirstOrDefault(x => x.amount == amount);
+        int clampedAmount = Math.Clamp(amount, 0, ResourceManager.instance.MaxResources());
+        UISpriteItem item = resourceUISprites.FirstOrDefault(x => x.amount == clampedAmount);
         mouseUIPanel.resourceUI1.sprite = item.sprite1;
         mouseUIPanel.resourceUI2.sprite = item.sprite2;
     }
 
     public void UpdateHP(int amount)
     {
-        UISpriteItem item = hpUISprites.FirstOrDefault(x => x.amount == amount);
+        int clampedAmount = Math.Clamp(amount, 10, 100);
+        UISpriteItem item = hpUISprites.FirstOrDefault(x => x.amount == clampedAmount);
         mouseUIPanel.hpUI1.sprite = item.sprite1;
         mouseUIPanel.hpUI2.sprite = item.sprite2;
     }

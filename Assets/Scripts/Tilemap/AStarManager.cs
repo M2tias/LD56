@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -22,6 +21,9 @@ public class AStarManager : MonoBehaviour
 
     [SerializeField]
     private Tilemap fogTilemap;
+
+    [SerializeField]
+    private List<DynamicInteractives> dynamicInteractives;
 
     public static AStarManager instance;
     private AStarGrid grid;
@@ -55,6 +57,11 @@ public class AStarManager : MonoBehaviour
         return logicalTilemap.WorldToCell(pos);
     }
 
+    public Vector3 TilemapToWorld(Vector3Int pos)
+    {
+        return logicalTilemap.WorldToCell(pos);
+    }
+
     public string GetTileName(Vector3 pos)
     {
         Vector3Int tilePos = WorldToTilemap(pos);
@@ -71,4 +78,32 @@ public class AStarManager : MonoBehaviour
         interactableTilemap.SetTile(pos, null);
         grid.DeleteInteractable(pos);
     }
+
+    public List<AStarNode> GetTileNeighbours(Vector3Int pos)
+    {
+        return grid.GetNeighbours(pos);
+    }
+
+    public void AddInteractable(Vector3Int tilePos, string tileName)
+    {
+        Tile tile = dynamicInteractives.FirstOrDefault(x => x.tileSprite.name == tileName)?.tile;
+
+        if (tile != null)
+        {
+            interactableTilemap.SetTile(tilePos, tile);
+            Debug.Log("Set tile");
+            grid.AddInteractable(tilePos, tileName, interactableTilemap);
+        }
+        else
+        {
+            Debug.LogError($"Tile {tileName} was not configured in DynamicInteractives!");
+        }
+    }
+}
+
+[Serializable]
+public class DynamicInteractives
+{
+    public Sprite tileSprite;
+    public Tile tile;
 }

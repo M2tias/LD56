@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -17,6 +18,7 @@ public class Selectable : MonoBehaviour
     private float lastMoveTime = 0f;
     private float lastAttackTime = 0f;
     private int gatheredResource = 0;
+    private ResourceType gatheredType = ResourceType.None;
 
     void Start()
     {
@@ -82,21 +84,27 @@ public class Selectable : MonoBehaviour
         return targetIsInteractable;
     }
 
-    public void Gather()
+    public void Gather(ResourceType type)
     {
+        gatheredType = type;
         gatheredResource++;
     }
 
-    public int Dump()
+    public (ResourceType, int) Dump()
     {
+        ResourceType tmpType = gatheredType;
         int tmp = gatheredResource;
         gatheredResource = 0;
-        return tmp;
+        gatheredType = ResourceType.None;
+        return new(tmpType, tmp);
     }
 
-    public bool CanGather()
+    public bool CanGather(ResourceType type)
     {
-        return gatheredResource < ResourceManager.instance.MaxResources();
+        bool hasNoResource = gatheredResource == 0;
+        bool hasSameResource = type == gatheredType && gatheredResource < ResourceManager.instance.MaxResources();
+
+        return hasNoResource || hasSameResource;
     }
 
     public float LastMoveTime

@@ -1,3 +1,4 @@
+using NUnit.Framework.Constraints;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -75,7 +76,6 @@ public class AStarGrid
         {
             endNode = endNode.Neighbours.FirstOrDefault(neighbour => !occupied.Any(y => Vector3.Distance(neighbour.TilemapPos, y) < 0.1f));
         }
-
 
         List<AStarNode> openSet = new List<AStarNode>() { startNode };
         HashSet<AStarNode> closedSet = new HashSet<AStarNode>();
@@ -162,6 +162,45 @@ public class AStarGrid
                 }
             }
         }
+    }
+
+    public void AddInteractable(Vector3Int tilePos, string tileName, Tilemap interactableTilemap)
+    {
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                AStarNode node = grid[x, y];
+
+                if (node != null && node.TilemapPos == tilePos)
+                {
+                    // Vector3 worldPos = interactableTilemap.CellToWorld(tilePos);
+                    // AStarNode newNode = new(new(x, y), tilePos, worldPos, true, true);
+                    // grid[x, y] = newNode;
+
+                    node.Walkable = true;
+                    node.Interactable = true;
+                }
+            }
+        }
+    }
+
+    public List<AStarNode> GetNeighbours(Vector3Int pos)
+    {
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                AStarNode node = grid[x, y];
+
+                if (node != null && node.TilemapPos == pos)
+                {
+                    return GetNeighbours(node);
+                }
+            }
+        }
+
+        return new();
     }
 
     private List<AStarNode> RetracePath(AStarNode startNode, AStarNode endNode)

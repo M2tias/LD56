@@ -32,16 +32,23 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.L))
         {
-            GameObject uiObj = Instantiate(mouseUIPrefab, mouseUiPanelContainer, true);
-            MouseUIPanel mouseUIPanel = uiObj.GetComponent<MouseUIPanel>();
-
-            GameObject obj = Instantiate(mousePrefab, null, true);
-            obj.transform.position = new Vector3(0.5f, 0.5f, 0);
-            Selectables.Add(obj.GetComponent<Selectable>());
-            MouseUI ui = obj.GetComponent<MouseUI>();
-
-            ui.Initialize(mouseUIPanel);
+            InstantiateMouse();
         }
+    }
+
+    public Selectable InstantiateMouse()
+    {
+        GameObject uiObj = Instantiate(mouseUIPrefab, mouseUiPanelContainer, true);
+        MouseUIPanel mouseUIPanel = uiObj.GetComponent<MouseUIPanel>();
+
+        GameObject obj = Instantiate(mousePrefab, null, true);
+        obj.transform.position = new Vector3(0.5f, 0.5f, 0);
+        Selectable selectable = obj.GetComponent<Selectable>();
+        Selectables.Add(selectable);
+        MouseUI ui = obj.GetComponent<MouseUI>();
+
+        ui.Initialize(mouseUIPanel);
+        return selectable;
     }
 
     public void MoveSelectable(Vector3 target)
@@ -51,9 +58,22 @@ public class GameManager : MonoBehaviour
         foreach (Selectable selectable in Selectables.Where(x => x.IsSelected()))
         {
             AStarResult pathResult = AStarManager.instance.FindPath(selectable.transform.position, target, occupied);
-            if (pathResult != null || pathResult?.Path != null || pathResult?.Path?.Count == 0)
+
+            if (pathResult != null && pathResult?.Path != null)
             {
-                occupied.Add(pathResult.Path.Last());
+                if (pathResult.Path.Count == 0 && pathResult.NodeType != AStarNodeType.Interactable)
+                {
+                    return;
+                }
+
+                if (pathResult.Path.Count == 0)
+                {
+                    occupied.Add(selectable.transform.position);
+                }
+                else
+                {
+                    occupied.Add(pathResult.Path.Last());
+                }
 
                 Coroutine ongoing = selectable.GetCurrentCoroutine();
                 if (ongoing != null)
@@ -86,17 +106,26 @@ public class GameManager : MonoBehaviour
                 yield return new WaitForSeconds(moveTime);
             }
 
-            // TODO: Path is done. If we need to interact, do it here?
-            if (selected.TargetIsInteractable() && selected.CanGather())
-            {
-                selected.Attack();
-                yield return new WaitForSeconds(attackTime);
-                while (ResourceManager.instance.Gather(selected, pathResult.ActionTargetPos))
-                {
-                    yield return new WaitForSeconds(attackTime);
-                }
 
-                selected.Idle();
+            // TODO: Path is done. If we need to interact, do it here?
+            if (selected.TargetIsInteractable())
+            {
+                ResourceType type = ResourceManager.instance.GetResourceTileType(pathResult.ActionTargetPos);
+
+
+                if (type == ResourceType.None || selected.CanGather(type))
+                {
+
+                    selected.Attack();
+                    yield return new WaitForSeconds(attackTime);
+
+                    while (ResourceManager.instance.Interact(selected, pathResult.ActionTargetPos))
+                    {
+                        yield return new WaitForSeconds(attackTime);
+                    }
+
+                    selected.Idle();
+                }
             }
         }
     }
