@@ -12,7 +12,7 @@ public class AStarGrid
     private int xOffset;
     private int yOffset;
 
-    public void GenerateMap(Tilemap map, Tilemap colliderMap, Tilemap interactableTilemap)
+    public void GenerateMap(Tilemap map, Tilemap colliderMap, Tilemap interactableTilemap, string waterName)
     {
         Vector3 tileMapOffSet = new Vector3(0.5f, 0.5f, 0);
         width = map.cellBounds.max.x - map.cellBounds.min.x + 1;
@@ -38,7 +38,7 @@ public class AStarGrid
                     Tile interactableTile = interactableTilemap.GetTile<Tile>(tileMapPos);
 
                     bool interactable = interactableTile != null;
-                    bool walkable = colliderTile == null && groundTile != null;
+                    bool walkable = colliderTile == null && groundTile != null && groundTile.name != waterName;
 
                     AStarNode node = new AStarNode(aStarPos, tileMapPos, pos, walkable, interactable);
                     grid[ax, ay] = node;

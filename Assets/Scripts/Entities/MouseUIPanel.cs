@@ -21,14 +21,19 @@ public class MouseUIPanel : MonoBehaviour
     private Transform target;
     private CameraMovement cameraMovement;
 
-    public void Initialize(Transform target)
+    private Selectable selectable;
+
+    public void Initialize(Transform target, Selectable selectable)
     {
+        this.selectable = selectable;
         cameraMovement = Camera.main.GetComponent<CameraMovement>();
         this.target = target;
     }
 
     public void Plop()
     {
+        GameManager.instance.Selectables.ForEach(selectable => selectable.Deselect());
+        selectable.Select();
         cameraMovement.PanToTarget(target);
     }
 }

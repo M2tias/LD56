@@ -40,14 +40,12 @@ public class ResourceManager : MonoBehaviour
 
     // how much you get from one tile and what's the max amount for mouse
     private int amountPerTile = 5;
-    private int buildAmount = 5;//20;
+    private int buildAmount = 20;
     private int loveHutMiceAmount = 2;
 
     private int branches = 0;
     private int nuts = 0;
-    private int berries = 5;
-
-    private int test = 3;
+    private int berries = 10;
 
     private void Awake()
     {
@@ -130,6 +128,16 @@ public class ResourceManager : MonoBehaviour
         }
 
         return ResourceType.None;
+    }
+
+    public void EatFood()
+    {
+        berries--;
+
+        if (berries < 0)
+        {
+            Debug.Log("GAME OVER! YOU STARVED IDIOT");
+        }
     }
 
     private bool Copulate(Selectable mouse, Vector3Int tilePos, string tileName)

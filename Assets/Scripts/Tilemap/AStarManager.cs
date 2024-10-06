@@ -25,6 +25,11 @@ public class AStarManager : MonoBehaviour
     [SerializeField]
     private List<DynamicInteractives> dynamicInteractives;
 
+    [SerializeField]
+    private Sprite logicalWater;
+
+    private int fogRadius = 5;
+
     public static AStarManager instance;
     private AStarGrid grid;
 
@@ -37,7 +42,7 @@ public class AStarManager : MonoBehaviour
     void Start()
     {
         grid = new AStarGrid();
-        grid.GenerateMap(logicalTilemap, colliderTilemap, interactableTilemap);
+        grid.GenerateMap(logicalTilemap, colliderTilemap, interactableTilemap, logicalWater.name);
     }
 
     // Update is called once per frame
@@ -97,6 +102,24 @@ public class AStarManager : MonoBehaviour
         else
         {
             Debug.LogError($"Tile {tileName} was not configured in DynamicInteractives!");
+        }
+    }
+
+    public void UpdateFog(Vector3 pos)
+    {
+        Vector3Int tilePos = fogTilemap.WorldToCell(pos);
+
+        for (int i = -fogRadius; i < fogRadius; i++)
+        {
+            for (int j = -fogRadius; j < fogRadius; j++)
+            {
+                Vector3Int fogTilePos = tilePos + new Vector3Int(i, j, 0);
+
+                if (Vector3Int.Distance(tilePos, fogTilePos) < fogRadius)
+                {
+                    fogTilemap.SetTile(fogTilePos, null);
+                }
+            }
         }
     }
 }

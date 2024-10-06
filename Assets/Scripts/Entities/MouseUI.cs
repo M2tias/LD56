@@ -18,15 +18,18 @@ public class MouseUI : MonoBehaviour
     [SerializeField]
     private List<UISpriteItem> hpUISprites = new List<UISpriteItem>();
 
+    private Selectable selectable;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         worldUICanvas.worldCamera = Camera.main;
     }
 
-    public void Initialize(MouseUIPanel uiPanel)
+    public void Initialize(MouseUIPanel uiPanel, Selectable selectable)
     {
-        uiPanel.Initialize(transform);
+        this.selectable = selectable;
+        uiPanel.Initialize(transform, selectable);
         mouseUIPanel = uiPanel;
     }
 

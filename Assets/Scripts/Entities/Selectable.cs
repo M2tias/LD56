@@ -37,6 +37,7 @@ public class Selectable : MonoBehaviour
         selectBorder.SetActive(isSelected);
         hpUi.SetActive(isSelected);
         ui.UpdateResource(gatheredResource);
+        AStarManager.instance.UpdateFog(transform.position);
     }
 
     public void Select()

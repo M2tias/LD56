@@ -88,10 +88,10 @@ public class GenerateVisualTilemap : MonoBehaviour
 
                     TileType[] tileKeyArray = 
                         new List<Vector3Int>() {
-                            new Vector3Int(x-1, y, z),
+                            new Vector3Int(x, y+1, z),
+                            new Vector3Int(x+1, y+1, z),
                             new Vector3Int(x, y, z),
-                            new Vector3Int(x-1, y-1, z),
-                            new Vector3Int(x, y-1, z)
+                            new Vector3Int(x+1, y, z)
                         }
                         .Select(v => logicalMap.GetTile<Tile>(v))
                         .Where(x => x != null)

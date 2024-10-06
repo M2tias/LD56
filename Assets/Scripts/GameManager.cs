@@ -49,7 +49,7 @@ public class GameManager : MonoBehaviour
         if (Time.time - secondsPerBerry > lastFood)
         {
             lastFood = Time.time;
-            EffectManager.instance.PlayEatingFood();
+            StartCoroutine(PopFoodEffect(Selectables.Count()));// EffectManager.instance.PlayEatingFood();
         }
     }
 
@@ -64,7 +64,7 @@ public class GameManager : MonoBehaviour
         Selectables.Add(selectable);
         MouseUI ui = obj.GetComponent<MouseUI>();
 
-        ui.Initialize(mouseUIPanel);
+        ui.Initialize(mouseUIPanel, selectable);
         return selectable;
     }
 
@@ -144,6 +144,17 @@ public class GameManager : MonoBehaviour
                     selected.Idle();
                 }
             }
+        }
+    }
+
+    private IEnumerator PopFoodEffect(int amount)//Vector3 resourcePos, int amount)
+    {
+        for (int i = 0; i < amount; i++)
+        {
+            //EffectManager.instance.InstantiatePlusOne(resourcePos + Random.Range(-0.5f, 0.5f) * Vector3.right);
+            EffectManager.instance.PlayEatingFood();
+            ResourceManager.instance.EatFood();
+            yield return new WaitForSeconds(0.25f);
         }
     }
 }
