@@ -1,4 +1,5 @@
 using JetBrains.Annotations;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -44,7 +45,7 @@ public class ResourceManager : MonoBehaviour
 
     private int branches = 0;
     private int nuts = 0;
-    private int berries = 0;
+    private int berries = 5;
 
     private int test = 3;
 
@@ -91,6 +92,8 @@ public class ResourceManager : MonoBehaviour
                     break;
             }
 
+            StartCoroutine(PopDumpEffect(resourcePos, amount));
+
             // Dump everything at once and it's done
             return false;
         }
@@ -105,6 +108,15 @@ public class ResourceManager : MonoBehaviour
         else
         {
             return Gather(mouse, tilePos, tileName);
+        }
+    }
+
+    private IEnumerator PopDumpEffect(Vector3 resourcePos, int amount)
+    {
+        for (int i = 0; i < amount; i++)
+        {
+            EffectManager.instance.InstantiatePlusOne(resourcePos + Random.Range(-0.5f, 0.5f) * Vector3.right);
+            yield return new WaitForSeconds(0.05f);
         }
     }
 
@@ -177,6 +189,7 @@ public class ResourceManager : MonoBehaviour
 
         if (branches > 0)
         {
+            EffectManager.instance.InstantiateMinusOne(AStarManager.instance.TilemapToWorld(tilePos) + Vector3.up * 0.5f);
             branches--;
             buildingProgress[dictKey]++;
         }
@@ -199,6 +212,7 @@ public class ResourceManager : MonoBehaviour
 
         if (tileAmounts[dictKey] > 1)
         {
+            EffectManager.instance.InstantiatePlusOne(AStarManager.instance.TilemapToWorld(tilePos));
             tileAmounts[dictKey]--;
         }
         else
@@ -225,6 +239,7 @@ public class ResourceManager : MonoBehaviour
         {
             mouse.Gather(type);
         }
+
         return tileAmounts.ContainsKey(dictKey);
     }
 

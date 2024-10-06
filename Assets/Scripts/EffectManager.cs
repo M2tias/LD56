@@ -7,6 +7,18 @@ public class EffectManager : MonoBehaviour
     [SerializeField]
     private GameObject heartParticlesPrefab;
 
+    [SerializeField]
+    private GameObject plusOneParticlesPrefab;
+
+    [SerializeField]
+    private GameObject minusOneParticlesPrefab;
+
+    [SerializeField]
+    private GameObject eatingFoodParticlesPrefab;
+
+    [SerializeField]
+    private ParticleSystem eatingFoodParticles;
+
     private void Awake()
     {
         instance = this;
@@ -29,4 +41,28 @@ public class EffectManager : MonoBehaviour
         GameObject particles = Instantiate(heartParticlesPrefab, transform, true);
         particles.transform.position = pos;
     }
+
+    public void InstantiatePlusOne(Vector3 pos)
+    {
+        GameObject particles = Instantiate(plusOneParticlesPrefab, transform, true);
+        particles.transform.position = pos;
+    }
+
+    public void InstantiateMinusOne(Vector3 pos)
+    {
+        GameObject particles = Instantiate(minusOneParticlesPrefab, transform, true);
+        particles.transform.position = pos;
+    }
+
+    public void InstantiateEatingFood(Vector3 pos)
+    {
+        GameObject particles = Instantiate(eatingFoodParticlesPrefab, transform, true);
+        particles.transform.position = pos;
+    }
+
+    public void PlayEatingFood()
+    {
+        eatingFoodParticles.Play();
+    }
+
 }

@@ -16,6 +16,9 @@ public class GameManager : MonoBehaviour
 
     public static GameManager instance;
 
+    private float secondsPerBerry = 30;
+    private float lastFood;
+
     private void Awake()
     {
         instance = this;
@@ -25,6 +28,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         Selectables = FindObjectsByType<Selectable>(FindObjectsSortMode.None).ToList();
+        lastFood = Time.time + secondsPerBerry; // 30s of mercy at the start
     }
 
     // Update is called once per frame
@@ -33,6 +37,12 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.L))
         {
             InstantiateMouse();
+        }
+
+        if (Time.time - secondsPerBerry > lastFood)
+        {
+            lastFood = Time.time;
+            EffectManager.instance.PlayEatingFood();
         }
     }
 
