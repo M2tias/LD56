@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Selectable : MonoBehaviour
 {
@@ -8,6 +9,8 @@ public class Selectable : MonoBehaviour
     private GameObject selectBorder;
     [SerializeField]
     private GameObject hpUi;
+    [SerializeField]
+    private Image resourceBarMaskImage; 
 
     private Animator animator;
     private MouseUI ui;
@@ -38,6 +41,7 @@ public class Selectable : MonoBehaviour
         hpUi.SetActive(isSelected);
         ui.UpdateResource(gatheredResource);
         AStarManager.instance.UpdateFog(transform.position);
+        resourceBarMaskImage.fillAmount = gatheredResource / 5f;
     }
 
     public void Select()

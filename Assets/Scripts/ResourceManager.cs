@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class ResourceManager : MonoBehaviour
@@ -46,6 +47,8 @@ public class ResourceManager : MonoBehaviour
     private int branches = 0;
     private int nuts = 0;
     private int berries = 10;
+    private int winScene = 3;
+    private int loseScene = 2;
 
     private void Awake()
     {
@@ -66,6 +69,26 @@ public class ResourceManager : MonoBehaviour
         berryText.text = $"{berries}/100";
         branchText.text = $"{branches}/100";
         nutText.text = $"{nuts}/100";
+
+        if (nuts >= 100)
+        {
+            Invoke("Victory", 1f);
+        }
+
+        if (berries < 0)
+        {
+            Invoke("Lose", 1f);
+        }
+    }
+
+    private void Victory()
+    {
+        SceneManager.LoadScene(winScene);
+    }
+
+    private void Lose()
+    {
+        SceneManager.LoadScene(loseScene);
     }
 
     public bool Interact(Selectable mouse, Vector3 resourcePos)
@@ -133,11 +156,6 @@ public class ResourceManager : MonoBehaviour
     public void EatFood()
     {
         berries--;
-
-        if (berries < 0)
-        {
-            Debug.Log("GAME OVER! YOU STARVED IDIOT");
-        }
     }
 
     private bool Copulate(Selectable mouse, Vector3Int tilePos, string tileName)
@@ -149,10 +167,13 @@ public class ResourceManager : MonoBehaviour
         }
         else if (loveHutMice.Count() == loveHutMiceAmount - 1)
         {
-            EffectManager.instance.InstantiateHearts(AStarManager.instance.TilemapToWorld(tilePos) + Vector3.up * 0.5f);
-            Selectable newMouse = GameManager.instance.InstantiateMouse();
+            if (GameManager.instance.Selectables.Count < 8)
+            {
+                EffectManager.instance.InstantiateHearts(AStarManager.instance.TilemapToWorld(tilePos) + Vector3.up * 0.5f);
+                Selectable newMouse = GameManager.instance.InstantiateMouse();
+                loveHutMice.Add(newMouse);
+            }
 
-            loveHutMice.Add(newMouse);
             loveHutMice.Add(mouse);
             List<AStarNode> neighbours = AStarManager.instance.GetTileNeighbours(tilePos);
 
@@ -211,6 +232,11 @@ public class ResourceManager : MonoBehaviour
 
     private bool Gather(Selectable mouse, Vector3Int tilePos, string tileName)
     {
+        if (tileName == null)
+        {
+            return false;
+        }
+
         string dictKey = $"{tileName}|({tilePos.x},{tilePos.y},{tilePos.z})";
 
         if (!tileAmounts.ContainsKey(dictKey))
