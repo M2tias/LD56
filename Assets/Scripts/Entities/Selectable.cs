@@ -9,6 +9,7 @@ public class Selectable : MonoBehaviour
     private GameObject hpUi;
 
     private Animator animator;
+    private MouseUI ui;
 
     private bool isSelected = false;
     private bool targetIsInteractable = false;
@@ -25,6 +26,7 @@ public class Selectable : MonoBehaviour
         }
 
         animator = GetComponent<Animator>();
+        ui = GetComponent<MouseUI>();
     }
 
     // Update is called once per frame
@@ -32,6 +34,7 @@ public class Selectable : MonoBehaviour
     {
         selectBorder.SetActive(isSelected);
         hpUi.SetActive(isSelected);
+        ui.UpdateResource(gatheredResource);
     }
 
     public void Select()
@@ -89,6 +92,11 @@ public class Selectable : MonoBehaviour
         int tmp = gatheredResource;
         gatheredResource = 0;
         return tmp;
+    }
+
+    public bool CanGather()
+    {
+        return gatheredResource < ResourceManager.instance.MaxResources();
     }
 
     public float LastMoveTime

@@ -14,6 +14,7 @@ public class ResourceManager : MonoBehaviour
 
     private Dictionary<string, int> tileAmounts = new Dictionary<string, int>();
 
+    // how much you get from one tile and what's the max amount for mouse
     private int amountPerTile = 5;
 
     private int branches = 0;
@@ -39,7 +40,7 @@ public class ResourceManager : MonoBehaviour
         
     }
 
-    public bool Gather(Vector3 resourcePos)
+    public bool Gather(Selectable mouse, Vector3 resourcePos)
     {
         Vector3Int tilePos = AStarManager.instance.WorldToTilemap(resourcePos);
         string tileName = AStarManager.instance.GetTileName(tilePos);
@@ -73,6 +74,12 @@ public class ResourceManager : MonoBehaviour
             branches++;
         }
 
+        mouse.Gather();
         return tileAmounts.ContainsKey(dictKey);
+    }
+
+    public int MaxResources()
+    {
+        return amountPerTile;
     }
 }

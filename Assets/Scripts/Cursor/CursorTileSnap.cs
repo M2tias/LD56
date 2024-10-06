@@ -91,7 +91,9 @@ public class CursorTileSnap : MonoBehaviour
             }
         }
 
-        isDragging = clickOrDragStarted && Time.time - clickStartedTime > clickMs;
+        bool isDraggingTime = clickOrDragStarted && Time.time - clickStartedTime > clickMs;
+        bool isDraggingDist = clickOrDragStarted && Vector3.Distance(pos, mouseDragStartPos) > 1f;
+        isDragging = isDraggingTime || isDraggingDist;
 
         if (isDragging)
         {

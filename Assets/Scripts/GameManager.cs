@@ -5,6 +5,13 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField]
+    private GameObject mousePrefab;
+    [SerializeField]
+    private Transform mouseUiPanelContainer;
+    [SerializeField]
+    private GameObject mouseUIPrefab;
+
     public List<Selectable> Selectables;
 
     public static GameManager instance;
@@ -23,7 +30,18 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            GameObject uiObj = Instantiate(mouseUIPrefab, mouseUiPanelContainer, true);
+            MouseUIPanel mouseUIPanel = uiObj.GetComponent<MouseUIPanel>();
 
+            GameObject obj = Instantiate(mousePrefab, null, true);
+            obj.transform.position = new Vector3(0.5f, 0.5f, 0);
+            Selectables.Add(obj.GetComponent<Selectable>());
+            MouseUI ui = obj.GetComponent<MouseUI>();
+
+            ui.Initialize(mouseUIPanel);
+        }
     }
 
     public void MoveSelectable(Vector3 target)
@@ -33,7 +51,7 @@ public class GameManager : MonoBehaviour
         foreach (Selectable selectable in Selectables.Where(x => x.IsSelected()))
         {
             AStarResult pathResult = AStarManager.instance.FindPath(selectable.transform.position, target, occupied);
-            if (pathResult != null || pathResult.Path != null || pathResult.Path.Count == 0)
+            if (pathResult != null || pathResult?.Path != null || pathResult?.Path?.Count == 0)
             {
                 occupied.Add(pathResult.Path.Last());
 
@@ -69,11 +87,11 @@ public class GameManager : MonoBehaviour
             }
 
             // TODO: Path is done. If we need to interact, do it here?
-            if (selected.TargetIsInteractable())
+            if (selected.TargetIsInteractable() && selected.CanGather())
             {
                 selected.Attack();
                 yield return new WaitForSeconds(attackTime);
-                while (ResourceManager.instance.Gather(pathResult.ActionTargetPos))
+                while (ResourceManager.instance.Gather(selected, pathResult.ActionTargetPos))
                 {
                     yield return new WaitForSeconds(attackTime);
                 }

@@ -276,6 +276,7 @@ GameObject:
   - component: {fileID: 552196232976476516}
   - component: {fileID: 953331595523356699}
   - component: {fileID: 7832958227363420128}
+  - component: {fileID: 7301334990743325591}
   m_Layer: 0
   m_Name: mouse
   m_TagString: Untagged
@@ -391,6 +392,70 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &7301334990743325591
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5360120890056473558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e46b71c958c0c144874152dc29f6c18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mouseUIPanel: {fileID: 0}
+  worldUICanvas: {fileID: 1804834782689412969}
+  resourceUISprites:
+  - amount: 0
+    sprite1: {fileID: 194645682, guid: 689187c932646184da43c97fbc2273b1, type: 3}
+    sprite2: {fileID: 585546260, guid: 689187c932646184da43c97fbc2273b1, type: 3}
+  - amount: 1
+    sprite1: {fileID: 1643401947, guid: 689187c932646184da43c97fbc2273b1, type: 3}
+    sprite2: {fileID: 585546260, guid: 689187c932646184da43c97fbc2273b1, type: 3}
+  - amount: 2
+    sprite1: {fileID: -1808855938, guid: 689187c932646184da43c97fbc2273b1, type: 3}
+    sprite2: {fileID: 585546260, guid: 689187c932646184da43c97fbc2273b1, type: 3}
+  - amount: 3
+    sprite1: {fileID: 283939445, guid: 689187c932646184da43c97fbc2273b1, type: 3}
+    sprite2: {fileID: 585546260, guid: 689187c932646184da43c97fbc2273b1, type: 3}
+  - amount: 4
+    sprite1: {fileID: -172729255, guid: 689187c932646184da43c97fbc2273b1, type: 3}
+    sprite2: {fileID: 585546260, guid: 689187c932646184da43c97fbc2273b1, type: 3}
+  - amount: 5
+    sprite1: {fileID: -1462187233, guid: 689187c932646184da43c97fbc2273b1, type: 3}
+    sprite2: {fileID: 585546260, guid: 689187c932646184da43c97fbc2273b1, type: 3}
+  hpUISprites:
+  - amount: 10
+    sprite1: {fileID: -1988519213, guid: 689187c932646184da43c97fbc2273b1, type: 3}
+    sprite2: {fileID: -1632917381, guid: 689187c932646184da43c97fbc2273b1, type: 3}
+  - amount: 20
+    sprite1: {fileID: 724282228, guid: 689187c932646184da43c97fbc2273b1, type: 3}
+    sprite2: {fileID: -1632917381, guid: 689187c932646184da43c97fbc2273b1, type: 3}
+  - amount: 30
+    sprite1: {fileID: 759078, guid: 689187c932646184da43c97fbc2273b1, type: 3}
+    sprite2: {fileID: -1632917381, guid: 689187c932646184da43c97fbc2273b1, type: 3}
+  - amount: 40
+    sprite1: {fileID: 1772598637, guid: 689187c932646184da43c97fbc2273b1, type: 3}
+    sprite2: {fileID: -1632917381, guid: 689187c932646184da43c97fbc2273b1, type: 3}
+  - amount: 50
+    sprite1: {fileID: 1599561337, guid: 689187c932646184da43c97fbc2273b1, type: 3}
+    sprite2: {fileID: -1632917381, guid: 689187c932646184da43c97fbc2273b1, type: 3}
+  - amount: 60
+    sprite1: {fileID: -1570356872, guid: 689187c932646184da43c97fbc2273b1, type: 3}
+    sprite2: {fileID: -1632917381, guid: 689187c932646184da43c97fbc2273b1, type: 3}
+  - amount: 70
+    sprite1: {fileID: 217997002, guid: 689187c932646184da43c97fbc2273b1, type: 3}
+    sprite2: {fileID: -1632917381, guid: 689187c932646184da43c97fbc2273b1, type: 3}
+  - amount: 80
+    sprite1: {fileID: -1201086195, guid: 689187c932646184da43c97fbc2273b1, type: 3}
+    sprite2: {fileID: -1632917381, guid: 689187c932646184da43c97fbc2273b1, type: 3}
+  - amount: 90
+    sprite1: {fileID: -443640882, guid: 689187c932646184da43c97fbc2273b1, type: 3}
+    sprite2: {fileID: -1632917381, guid: 689187c932646184da43c97fbc2273b1, type: 3}
+  - amount: 90
+    sprite1: {fileID: -443640882, guid: 689187c932646184da43c97fbc2273b1, type: 3}
+    sprite2: {fileID: -1632917381, guid: 689187c932646184da43c97fbc2273b1, type: 3}
 --- !u!1 &5678346446912639598
 GameObject:
   m_ObjectHideFlags: 0

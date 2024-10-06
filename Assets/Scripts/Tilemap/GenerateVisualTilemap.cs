@@ -16,6 +16,8 @@ public class GenerateVisualTilemap : MonoBehaviour
     [SerializeField]
     private Tile second;
     [SerializeField]
+    private Tile water;
+    [SerializeField]
     private Tile[] tiles;
 
     Dictionary<string, TileType> tileTypeMap = new();
@@ -26,6 +28,7 @@ public class GenerateVisualTilemap : MonoBehaviour
     {
         tileTypeMap.Add(first.name, TileType.Ground);
         tileTypeMap.Add(second.name, TileType.Grass);
+        tileTypeMap.Add(water.name, TileType.Water);
 
         tileMapping = new()
         {
@@ -45,6 +48,22 @@ public class GenerateVisualTilemap : MonoBehaviour
             { new (TileType.Grass, TileType.Grass, TileType.Grass, TileType.Ground), tiles[13] },
             { new (TileType.Grass, TileType.Ground, TileType.Ground, TileType.Grass), tiles[14] },
             { new (TileType.Ground, TileType.Grass, TileType.Grass, TileType.Grass), tiles[15] },
+            { new (TileType.Water, TileType.Water, TileType.Ground, TileType.Water), tiles[16] },
+            { new (TileType.Water, TileType.Ground, TileType.Water, TileType.Ground), tiles[17] },
+            { new (TileType.Ground, TileType.Water, TileType.Ground, TileType.Ground), tiles[18] },
+            { new (TileType.Water, TileType.Water, TileType.Ground, TileType.Ground), tiles[19] },
+            { new (TileType.Ground, TileType.Water, TileType.Water, TileType.Ground), tiles[20] },
+            { new (TileType.Water, TileType.Ground, TileType.Ground, TileType.Ground), tiles[21] },
+            // { new (TileType.Ground, TileType.Ground, TileType.Ground, TileType.Ground), tiles[22] }, Already tiles[6]
+            { new (TileType.Ground, TileType.Ground, TileType.Ground, TileType.Water), tiles[23] },
+            { new (TileType.Water, TileType.Ground, TileType.Water, TileType.Water), tiles[24] },
+            { new (TileType.Ground, TileType.Ground, TileType.Water, TileType.Water), tiles[25] },
+            { new (TileType.Ground, TileType.Ground, TileType.Water, TileType.Ground), tiles[26] },
+            { new (TileType.Ground, TileType.Water, TileType.Ground, TileType.Water), tiles[27] },
+            { new (TileType.Water, TileType.Water, TileType.Water, TileType.Water), tiles[28] },
+            { new (TileType.Water, TileType.Water, TileType.Water, TileType.Ground), tiles[29] },
+            { new (TileType.Water, TileType.Ground, TileType.Ground, TileType.Water), tiles[30] },
+            { new (TileType.Ground, TileType.Water, TileType.Water, TileType.Water), tiles[31] },
         };
 
         bool firstX = true;
@@ -125,6 +144,7 @@ public class GenerateVisualTilemap : MonoBehaviour
     enum TileType
     {
         Ground,
-        Grass
+        Grass,
+        Water
     }
 }
