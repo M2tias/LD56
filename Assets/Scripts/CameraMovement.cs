@@ -5,10 +5,18 @@ public class CameraMovement : MonoBehaviour
 {
     private float cameraMoveSpeed = 8f;
     private Vector3 mouseOffset = Vector3.zero;
-    private float maxX = -1000f;
-    private float minX = 1000f;
-    private float maxY = -1000f;
-    private float minY = 1000f;
+
+    [SerializeField]
+    private float maxX;
+    [SerializeField]
+    private float minX;
+    [SerializeField]
+    private float maxY;
+    [SerializeField]
+    private float minY;
+
+    [SerializeField]
+    private GameObject foodParticleSystem;
 
     private bool panningMode = false;
     private float autoPanSpeedPerUnit = 35f;
@@ -76,29 +84,18 @@ public class CameraMovement : MonoBehaviour
             {
                 transform.position = transform.position + (-1f) * Input.mousePositionDelta * 0.1f;
             }
-
-            if (transform.position.x < minX)
-            {
-                minX = transform.position.x;
-            }
-            if (transform.position.x > maxX)
-            {
-                maxX = transform.position.x;
-            }
-            if (transform.position.y < minY)
-            {
-                minY = transform.position.y;
-            }
-            if (transform.position.y > maxY)
-            {
-                maxY = transform.position.y;
-            }
         }
 
         Vector3 pos = transform.position;
-        float x = Mathf.Clamp(pos.x, -28f, 31f);
-        float y = Mathf.Clamp(pos.y, -17f, 27f);
+        float x = Mathf.Clamp(pos.x, minX, maxX);
+        float y = Mathf.Clamp(pos.y, minY, maxY);
         transform.position = new Vector3(x, y, pos.z);
+
+
+        float horizontalExtent = Camera.main.orthographicSize * Screen.width / Screen.height;
+        float verticalExtent = Camera.main.orthographicSize;
+
+        foodParticleSystem.transform.position = new Vector3(x + horizontalExtent - 1f, y - verticalExtent - 1f, foodParticleSystem.transform.position.z);
 
         //Debug.Log($"Min: ({minX:#.##},{minY:#.##}), Max: ({maxX:#.##}{maxY:#.##})");
     }

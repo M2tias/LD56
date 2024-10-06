@@ -28,7 +28,7 @@ public class AStarManager : MonoBehaviour
     [SerializeField]
     private Sprite logicalWater;
 
-    private int fogRadius = 5;
+    private int fogRadius = 6;
 
     public static AStarManager instance;
     private AStarGrid grid;
