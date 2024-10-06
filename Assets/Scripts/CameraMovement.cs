@@ -1,48 +1,116 @@
 using UnityEngine;
-using static UnityEngine.RuleTile.TilingRuleOutput;
+using UnityEngine.Events;
 
 public class CameraMovement : MonoBehaviour
 {
     private float cameraMoveSpeed = 8f;
     private Vector3 mouseOffset = Vector3.zero;
+    private float maxX = -1000f;
+    private float minX = 1000f;
+    private float maxY = -1000f;
+    private float minY = 1000f;
+
+    private bool panningMode = false;
+    private float autoPanSpeedPerUnit = 35f;
+    private float currentAutoPanSpeed = 0f;
+    private Vector3 panStart;
+    private Vector3 panEnd;
+    private float panT = 0f;
+
+    public UnityAction<Transform> PanToTargetAction;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        PanToTargetAction += PanToTarget;
     }
 
     // Update is called once per frame
     void Update()
     {
-        float frameMove = cameraMoveSpeed * Time.deltaTime;
+        if (panningMode)
+        {
+            panT += Time.deltaTime * currentAutoPanSpeed;
 
-        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.I) || Input.GetKey(KeyCode.UpArrow))
-        {
-            transform.position = new(transform.position.x, transform.position.y + frameMove, transform.position.z);
+            float z = transform.position.z;
+            Vector3 tmpPos = transform.position;
+
+            tmpPos = Vector3.Lerp(panStart, panEnd, panT);
+            tmpPos = new(tmpPos.x, tmpPos.y, z);
+            transform.position = tmpPos;
+
+            if (panT >= 1f)
+            {
+                panningMode = false;
+                panT = 0f;
+            }
         }
-        else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.K) || Input.GetKey(KeyCode.DownArrow))
+        else
         {
-            transform.position = new(transform.position.x, transform.position.y - frameMove, transform.position.z);
+            float frameMove = cameraMoveSpeed * Time.deltaTime;
+
+            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.I) || Input.GetKey(KeyCode.UpArrow))
+            {
+                transform.position = new(transform.position.x, transform.position.y + frameMove, transform.position.z);
+            }
+            else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.K) || Input.GetKey(KeyCode.DownArrow))
+            {
+                transform.position = new(transform.position.x, transform.position.y - frameMove, transform.position.z);
+            }
+
+            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.LeftArrow))
+            {
+                transform.position = new(transform.position.x - frameMove, transform.position.y, transform.position.z);
+            }
+            else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.L) || Input.GetKey(KeyCode.RightArrow))
+            {
+                transform.position = new(transform.position.x + frameMove, transform.position.y, transform.position.z);
+            }
+
+            if (Input.GetMouseButtonDown(2))
+            {
+                mouseOffset = Input.mousePosition - Camera.main.ViewportToWorldPoint(Input.mousePosition);
+            }
+
+            if (Input.GetMouseButton(2))
+            {
+                transform.position = transform.position + (-1f) * Input.mousePositionDelta * 0.1f;
+            }
+
+            if (transform.position.x < minX)
+            {
+                minX = transform.position.x;
+            }
+            if (transform.position.x > maxX)
+            {
+                maxX = transform.position.x;
+            }
+            if (transform.position.y < minY)
+            {
+                minY = transform.position.y;
+            }
+            if (transform.position.y > maxY)
+            {
+                maxY = transform.position.y;
+            }
         }
 
-        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.LeftArrow))
-        {
-            transform.position = new(transform.position.x - frameMove, transform.position.y, transform.position.z);
-        }
-        else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.L) || Input.GetKey(KeyCode.RightArrow))
-        {
-            transform.position = new(transform.position.x + frameMove, transform.position.y, transform.position.z);
-        }
+        Vector3 pos = transform.position;
+        float x = Mathf.Clamp(pos.x, -28f, 31f);
+        float y = Mathf.Clamp(pos.y, -17f, 27f);
+        transform.position = new Vector3(x, y, pos.z);
 
-        if (Input.GetMouseButtonDown(2))
-        {
-            mouseOffset = Input.mousePosition - Camera.main.ViewportToWorldPoint(Input.mousePosition);
-        }
+        //Debug.Log($"Min: ({minX:#.##},{minY:#.##}), Max: ({maxX:#.##}{maxY:#.##})");
+    }
 
-        if (Input.GetMouseButton(2))
-        {
-            transform.position = transform.position + (-1f) * Input.mousePositionDelta * 0.1f;
-        }
+    public void PanToTarget(Transform target)
+    {
+        panEnd = target.position;// GameManager.instance.GetPanTarget();
+        panStart = transform.position;
+        panT = 0f;
+
+        currentAutoPanSpeed = autoPanSpeedPerUnit / Vector3.Distance(panEnd, panStart);
+
+        panningMode = true;
     }
 }

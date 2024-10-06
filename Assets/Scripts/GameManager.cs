@@ -29,6 +29,13 @@ public class GameManager : MonoBehaviour
     {
         Selectables = FindObjectsByType<Selectable>(FindObjectsSortMode.None).ToList();
         lastFood = Time.time + secondsPerBerry; // 30s of mercy at the start
+
+
+        Selectable m1 = InstantiateMouse();
+        m1.transform.position = new Vector3(1.5f, -1.5f, 0);
+
+        Selectable m2 = InstantiateMouse();
+        m2.transform.position = new Vector3(-2.5f, 0.5f, 0);
     }
 
     // Update is called once per frame

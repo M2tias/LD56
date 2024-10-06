@@ -14,4 +14,21 @@ public class MouseUIPanel : MonoBehaviour
 
     [SerializeField]
     public Image hpUI2;
+
+    [SerializeField]
+    private Button panButton;
+
+    private Transform target;
+    private CameraMovement cameraMovement;
+
+    public void Initialize(Transform target)
+    {
+        cameraMovement = Camera.main.GetComponent<CameraMovement>();
+        this.target = target;
+    }
+
+    public void Plop()
+    {
+        cameraMovement.PanToTarget(target);
+    }
 }

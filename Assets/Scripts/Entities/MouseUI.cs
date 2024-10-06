@@ -26,6 +26,7 @@ public class MouseUI : MonoBehaviour
 
     public void Initialize(MouseUIPanel uiPanel)
     {
+        uiPanel.Initialize(transform);
         mouseUIPanel = uiPanel;
     }
 
