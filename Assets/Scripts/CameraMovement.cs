@@ -1,10 +1,12 @@
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Rendering.Universal;
 
 public class CameraMovement : MonoBehaviour
 {
-    private float cameraMoveSpeed = 8f;
+    private float cameraMoveSpeed = 16f;
     private Vector3 mouseOffset = Vector3.zero;
+    private PixelPerfectCamera ppc;
 
     [SerializeField]
     private float maxX;
@@ -31,10 +33,11 @@ public class CameraMovement : MonoBehaviour
     void Start()
     {
         PanToTargetAction += PanToTarget;
+        ppc = GetComponent<PixelPerfectCamera>();
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         if (panningMode)
         {
@@ -82,14 +85,15 @@ public class CameraMovement : MonoBehaviour
 
             if (Input.GetMouseButton(2))
             {
-                transform.position = transform.position + (-1f) * Input.mousePositionDelta * 0.1f;
+                transform.position = transform.position + (-1f) * Input.mousePositionDelta * 0.04f;
             }
         }
 
         Vector3 pos = transform.position;
         float x = Mathf.Clamp(pos.x, minX, maxX);
         float y = Mathf.Clamp(pos.y, minY, maxY);
-        transform.position = new Vector3(x, y, pos.z);
+        
+        transform.position = ppc.RoundToPixel(new Vector3(x, y, pos.z));
 
 
         float horizontalExtent = Camera.main.orthographicSize * Screen.width / Screen.height;

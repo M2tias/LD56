@@ -57,6 +57,7 @@ public class GameManager : MonoBehaviour
     {
         GameObject uiObj = Instantiate(mouseUIPrefab, mouseUiPanelContainer, true);
         MouseUIPanel mouseUIPanel = uiObj.GetComponent<MouseUIPanel>();
+        mouseUIPanel.transform.localScale = Vector3.one;
 
         GameObject obj = Instantiate(mousePrefab, null, true);
         obj.transform.position = new Vector3(0.5f, 0.5f, 0);

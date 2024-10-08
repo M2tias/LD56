@@ -18,6 +18,9 @@ public class MouseUIPanel : MonoBehaviour
     [SerializeField]
     private Button panButton;
 
+    [SerializeField]
+    private GameObject selectedPanel;
+
     private Transform target;
     private CameraMovement cameraMovement;
 
@@ -35,5 +38,15 @@ public class MouseUIPanel : MonoBehaviour
         GameManager.instance.Selectables.ForEach(selectable => selectable.Deselect());
         selectable.Select();
         cameraMovement.PanToTarget(target);
+    }
+
+    public void Select()
+    {
+        selectedPanel.SetActive(true);
+    }
+
+    public void Deselect()
+    {
+        selectedPanel.SetActive(false);
     }
 }

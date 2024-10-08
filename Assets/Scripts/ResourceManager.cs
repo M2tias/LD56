@@ -66,9 +66,9 @@ public class ResourceManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        berryText.text = $"{berries}/100";
-        branchText.text = $"{branches}/100";
-        nutText.text = $"{nuts}/100";
+        berryText.text = $"{berries:0000}";
+        branchText.text = $"{branches:0000}";
+        nutText.text = $"{nuts:0000}";
 
         if (nuts >= 100)
         {

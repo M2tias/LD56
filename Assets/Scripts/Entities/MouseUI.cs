@@ -54,6 +54,16 @@ public class MouseUI : MonoBehaviour
         mouseUIPanel.hpUI1.sprite = item.sprite1;
         mouseUIPanel.hpUI2.sprite = item.sprite2;
     }
+
+    public void Select()
+    {
+        mouseUIPanel.Select();
+    }
+
+    public void Deselect()
+    {
+        mouseUIPanel.Deselect();
+    }
 }
 
 [Serializable]

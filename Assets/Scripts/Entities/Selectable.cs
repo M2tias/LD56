@@ -47,11 +47,13 @@ public class Selectable : MonoBehaviour
     public void Select()
     {
         isSelected = true;
+        ui.Select();
     }
 
     public void Deselect()
     {
         isSelected = false;
+        ui.Deselect();
     }
 
     public bool IsSelected()
