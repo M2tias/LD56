@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -121,9 +122,11 @@ public class GenerateVisualTilemap : MonoBehaviour
             firstX = false;
         }
 
+        // Use this for minimap
         if (logicalMap?.gameObject?.TryGetComponent(out TilemapRenderer tmRenderer) ?? false)
         {
-            tmRenderer.enabled = false;
+            SceneVisibilityManager.instance.Hide(logicalMap.gameObject, true);
+            tmRenderer.sortingOrder = 0; //enabled = false;
         }
     }
 
